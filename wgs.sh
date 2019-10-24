@@ -160,4 +160,4 @@ echo "Fin de la sélection complète des gènes."
 mkdir results/blastn
 ./soft/blastn -query results/genes_complet/genes_full.fna -db databases/resfinder.fna -evalue 0.001 -perc_identity 80 -qcov_hsp_perc 80 -outfmt "6 qseqid sseqid pident qcovs evalue" -best_hit_score_edge 0.00001 -out results/blastn/EchG_blastn.txt
 
-
+echo "Fin du programme."
