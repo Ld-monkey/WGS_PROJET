@@ -124,5 +124,40 @@ echo "Fin de création de association.tsv"
 
 # 3 : Assembler le génome avec megahit avec un k-mer max 21.
 # megahit en mode de consommation mémoire minimum.
-mkdir results/assembler_genome
-./soft/megahit -1 fastq/EchG_R1.fastq  -2 fastq/EchG_R2.fastq --mem-flag 0 --k-max 21 --k-min 21 -o results/assembler_genome/
+
+# Verification de l'existence du dossier assembler_genome .
+if [ -d "results/assembler_genome" ]; then
+    echo "Le génome des bactéries sont déjà assemblés avec megahit."
+else
+    ./soft/megahit -1 fastq/EchG_R1.fastq -2 fastq/EchG_R2.fastq --mem-flag 0 --k-max 21 --k-min 21 -o results/assembler_genome
+    echo "Le dossier assembler_genome est créé."
+    echo "Fin de l'assemblage avec megahit"
+fi
+
+# 4 : Prédire les gènes présents sur vos contigs avec prodigal.
+# sortie en format fasta.
+mkdir results/prediction_gene
+
+if [ -d "results/prediction_gene" ]; then
+    echo "Le dossier prediction_gene est déjà créé."
+else
+    mkdir results/prediction_gene
+fi
+
+if [ -f "results/prediction_gene/pred_file.fasta" ]; then
+    echo "La prédiction des gènes existe déjç."
+else
+    ./soft/prodigal -i results/assembler_genome/final.contigs.fa -d results/prediction_gene/pred_file.fasta
+    echo "Fin de la prédiction"
+fi
+
+# 5 : Sélectionner les gènes “complets”.
+mkdir results/genes_complet
+sed "s:>:*\n>:g" results/prediction_gene/pred_file.fasta | sed -n "/partial=00/,/*/p"|grep -v "*" > results/genes_complet/genes_full.fna
+echo "Fin de la sélection complète des gènes."
+
+# 6 : Annoter les gènes “complets” contre la banque resfinder (database/resfinder.fna) à l’aide de blastn. Vous sélectionnerez à l’aide de blast, les gènes avec une identité de >=80% et une couverture >= 80% pour une evalue supérieure à 1E-3.
+mkdir results/blastn
+./soft/blastn -query results/genes_complet/genes_full.fna -db databases/resfinder.fna -evalue 0.001 -perc_identity 80 -qcov_hsp_perc 80 -outfmt "6 qseqid sseqid pident qcovs evalue" -best_hit_score_edge 0.00001 -out results/blastn/EchG_blastn.txt
+
+
