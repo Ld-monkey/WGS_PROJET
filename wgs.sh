@@ -14,4 +14,22 @@ else
     gunzip fastq/EchG*.fastq.gz
 fi
 
+# 1 - Identifier et quantifier les bactéries présentes dans votre échantillon.
+# Aligner les reads avec all_genome.fasta + end to end avec mode rapide.
+# retourner un fichier sam.
+
+./soft/bowtie2 --help
+
+if [ -d "result" ] && [] && ; then
+    echo "Le dossier results a été créé."
+    echo "Le dossier rebuilt_genome a été créé."
+    echo "le dossier sam_output a été crée."
+else
+    mkdir results
+    mkdir results/rebuilt_genome
+    mkdir results/sam_output
+fi
+
+#./soft/bowtie2 -1 -2 -S results/sam_output/sam_out.sam
+
 
