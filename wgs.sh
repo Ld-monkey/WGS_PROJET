@@ -70,5 +70,30 @@ else
     echo "Samtool view a créé le binaire."
 fi
 
+# 2 - b : Trier votre bam (samtools sort).
+# Vérification du dossier sort_bam.
+if [ -d "results/sort_bam" ]; then
+    echo "Le dossier sort_bam a déjà été créé."
+else
+    mkdir results/sort_bam
+    echo "Le dossier sort_bam est créé."
+fi
 
+# Création du bam trié.
+if [ -f "results/sort_bam/sort_output.bam" ]; then
+    echo "bam trié déjà crée."
+else
+    echo "bam trié non crée."
+    ./soft/samtools-1.6/samtools sort results/sam_to_bam/output.bam -o results/sort_bam/sort_output.bam
+    echo "Le bam est trié."
+fi
+
+# 2 - c : Indexer le fichier bam.
+if [ -f "results/sort_bam/sort_output.bam.bai" ]; then
+    echo "bam indexé déjà crée."
+else
+    echo "bam indexé non crée."
+    ./soft/samtools-1.6/samtools index results/sort_bam/sort_output.bam
+    echo "Le fichier a été indexé."
+fi
 
