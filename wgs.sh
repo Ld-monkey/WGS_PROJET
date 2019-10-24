@@ -115,3 +115,14 @@ else
     ./soft/samtools-1.6/samtools idxstats results/sort_bam/sort_output.bam > results/idxstats/stats.tsv
     echo "Statistique depuis le fichier trié est réalisé."
 fi
+
+# 2 - f : L’association gi ->.
+mkdir results/association
+echo "Création du dossier association."
+grep ">" databases/all_genome.fasta|cut -f 2 -d ">" >results/association/association.tsv
+echo "Fin de création de association.tsv"
+
+# 3 : Assembler le génome avec megahit avec un k-mer max 21.
+# megahit en mode de consommation mémoire minimum.
+mkdir results/assembler_genome
+./soft/megahit -1 fastq/EchG_R1.fastq  -2 fastq/EchG_R2.fastq --mem-flag 0 --k-max 21 --k-min 21 -o results/assembler_genome/
