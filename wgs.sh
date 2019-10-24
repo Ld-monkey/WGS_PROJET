@@ -97,3 +97,21 @@ else
     echo "Le fichier a été indexé."
 fi
 
+# 2 - d : Extraction du comptage (samtools idxstats)
+
+# Verification de l'existence du dossier idxstats.
+if [ -d "results/idxstats" ]; then
+    echo "Le dossier idxstats a déjà été créé."
+else
+    mkdir results/idxstats
+    echo "Le dossier idxstats est créé."
+fi
+
+# Création des statistique avec idxstats.
+if [ -f "results/idxstats/stats.tsv" ]; then
+    echo "Les statistiques sont déjà crées."
+else
+    echo "Les statistiques sont en cours."
+    ./soft/samtools-1.6/samtools idxstats results/sort_bam/sort_output.bam > results/idxstats/stats.tsv
+    echo "Statistique depuis le fichier trié est réalisé."
+fi
